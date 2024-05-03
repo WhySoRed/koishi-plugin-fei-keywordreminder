@@ -34,6 +34,10 @@ export function apply(ctx: Context) {
     const cidKeywordList = {};
 
     ctx.on('ready', async() => {
+        await cidKeywordUpdate();
+    })
+
+    async function cidKeywordUpdate() {
         //通过集合来获取所有机器人实例的群列表
         const cidListSet = new Set<string>();
         await Promise.all(ctx.bots.map(async bot => {
@@ -46,14 +50,12 @@ export function apply(ctx: Context) {
         await Promise.all(cidListArr.map(async cid => {
             cidKeywordList[cid] = (await ctx.database.get('keywordRemind', { cid: cid })).map((data => data.keyword));;
         }));
-        console.log(cidKeywordList);
         //从数据库中筛除已经无法获取的群提醒
         const needFilteredCidSet = new Set<string>();
         (await ctx.database.get('keywordRemind',{})).forEach(data => {needFilteredCidSet.add(data.cid)})
         const invaildCidList = Array.from(needFilteredCidSet).filter(cid => !cidListSet.has(cid));
         invaildCidList.forEach(async cid => {await ctx.database.remove('keywordRemind', {cid: cid})});
-
-    })
+    }
 
     ctx.command('提醒').action(async ({ session }) => {
         return `施工中...`
@@ -103,8 +105,12 @@ export function apply(ctx: Context) {
 
     })
 
-    ctx.command('提醒.删除').action(async ({ session }) => {
-
+    ctx.command('提醒.删除').action(async ({ session }, message) => {
+        if(message === undefined) return '请输入要删除的关键词'
+        if((await ctx.database.get('keywordRemind', {keyword: message,})).length === 0) return `该关键词不存在...`
+        await ctx.database.remove('keywordRemind', {uid: session.userId, keyword: message, botId: session.bot.selfId})
+        await cidKeywordUpdate();
+        return `删除成功！`
     })
 
     ctx.on('message', async (session) => {
