@@ -1,6 +1,6 @@
 {
   "name": "koishi-plugin-fei-keywordreminder",
-  "description": "\u0016",
+  "description": "私聊用户提醒包含关键词的群消息",
   "version": "0.0.1",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -9,13 +9,11 @@
     "dist"
   ],
   "license": "MIT",
-  "scripts": {},
   "keywords": [
     "chatbot",
     "koishi",
     "plugin"
   ],
-  "devDependencies": {},
   "peerDependencies": {
     "koishi": "^4.17.5"
   }
