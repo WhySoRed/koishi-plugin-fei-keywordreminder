@@ -1,4 +1,3 @@
-import { group } from 'console'
 import { Context, Schema, Session, h, $ } from 'koishi'
 export const inject = ['database']
 
@@ -67,12 +66,20 @@ export function apply(ctx: Context) {
     }
 
     ctx.command('提醒').action(async ({ session }) => {
-        return `施工中...`
-    })
-
-    ctx.command('提醒测试').action(async ({ session }) => {
-        //console.log(await session.bot.getGuildMemberList('415681705'))
-        //console.log(session.bot)
+        return `
+本指令提供了关键词提醒功能
+在触发关键词时会进行私聊提醒
+指令列表：
+提醒.群提醒 [关键词] [(可选)群id]
+  -在指定群中提醒关键词
+  -不指定群id则为当前群
+提醒.全局提醒 [关键词]
+  -在所有群中提醒关键词
+提醒.删除 [要删除的关键词] [(可选)群id]
+  -删除指定群中的关键词提醒
+  -不指定群id则为当前群
+提醒.列表
+  -查看自己的关键词提醒列表`
     })
 
     ctx.command('提醒.群提醒','[关键词] [(可选)群id]').action(async ({ args, session }) => {
